@@ -1,4 +1,3 @@
-# Personal-Project
-#Varied Personal Projects
-##-Contents:
-###  ~Tic-Tac-Toe + AI, Currently In Progress... It likes to let you win.
+Contents:
+#tictactoe.py
+###Contains Tic-Tac-Toe + AI
