@@ -3,6 +3,7 @@ PROG::pathFind.py
 AUTHOR::Kevin.P.Barnett
 DATE::Nov.18.2015
 """
+import time
 
 class Space:
     def __init__(self, name, dir):
@@ -53,6 +54,19 @@ class Board:
                     raise Exception("Invalid Character in File:", fileName)
         self.width //= self.height
 
+    def get3DBoardFromFile(self, fileName):
+        tempBoard = []
+        tempList = []
+        for line in open(fileName):
+            if line == '\n':
+                self.board.append(tempBoard[:])
+                tempBoard.clear()
+            else:
+                for char in line.strip().split():
+                    tempList.append(char)
+                tempBoard += [tempList[:]]
+                tempList.clear()
+
     def print(self):
         for line in self.board:
             for space in line:
@@ -64,6 +78,7 @@ class Board:
             for space in line:
                 print(space.name, ' ', end='')
             print()
+        print()
 
     def sideCheck(self):
         for line in range(len(self.board)):
@@ -88,38 +103,59 @@ class Board:
                     return space, line
 
 def findPath(board, x, y):
-    space  = board.board[y][x]
-    nm = space.name
-    tree = Tree(space)
-    if nm == 'E':
-
-    elif not(space.dir == []):
-        if 'L' in nm:
-            space.removeDir('L')
-            board.board[y][x-1].removeDir('R')
-            findPath(board, x-1, y))
-        if 'U' in nm:
-            space.removeDir('U')
-            board.board[y-1][x].removeDir('D')
-            findPath(board, x, y-1)
-        if 'R' in nm:
-            space.removeDir('R')
-            board.board[y][x+1].removeDir('L')
-            findPath(board, x+1, y)
-        if 'D' in nm:
-            space.removeDir('D')
-            board.board[y+1][x].removeDir('U')
-            findPath(board, x, y+1)
-    else:
-        return tree
+    height = len(board.board)
+    width = len(board.board[0])
+    for many in range((height+width)*2):
+            for by in range(height):
+                for bx in range(len(board.board[by])):
+                    dir = board.board[by][bx].dir
+                    if len(dir) <= 1 and board.board[by][bx].name == ' ':
+                        board.board[by][bx].name = 'X'
+                        if len(dir):
+                            if dir[0] == 'L':
+                                board.board[by][bx-1].dir.remove('R')
+                            elif dir[0] == 'U':
+                                board.board[by-1][bx].dir.remove('D')
+                            elif dir[0] == 'R':
+                                board.board[by][bx+1].dir.remove('L')
+                            else:
+                                board.board[by+1][bx].dir.remove('U')
+    pathList = []
+    while True:
+        pathList.append((x, y))
+        dir = board.board[y][x].dir
+        if board.board[y][x].name == 'E':
+            return pathList
+        if dir[0] == 'L':
+            board.board[y][x-1].dir.remove('R')
+            x, y = x-1, y
+        elif dir[0] == 'U':
+            board.board[y-1][x].dir.remove('D')
+            x, y = x, y-1
+        elif dir[0] == 'R':
+            board.board[y][x+1].dir.remove('L')
+            x, y = x+1, y
+        else:
+            board.board[y+1][x].dir.remove('U')
+            x, y = x, y+1
 
 def main():
     c = Board()
-    c.getBoardFromFile("small.txt")
-    c.sideCheck()
-    c.printBoard()
-    x, y = c.findIndexOfS()
-    print(findPath(c, x, y))
+    c.get3DBoardFromFile("3d.txt")
+    for z in c.board:
+        for y in z:
+            for x in y:
+                print(x, end='')
+            print()
+        print()
+    #c.getBoardFromFile("big.txt")
+    #c.sideCheck()
+    #c.printBoard()
+    #x, y = c.findIndexOfS()
+    #tempS = time.clock()
+    #print(findPath(c, x, y))
+    #tempE = time.clock()
+    #print("Elapsed Time: ", tempE-tempS)
 
 if __name__ == "__main__":
     main()
