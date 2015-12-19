@@ -1,7 +1,7 @@
 PathFinding Project
 #Contents:
 ###pathFind.py
-#####contains whole program, currently developing 3d maze solving, can read in 3d maze, does nothing else as of yet
+#####contains whole program, solves 3d mazes, currently developing amorphous maze acceptance
 ###big.txt
 ###small.txt
 ###board.txt
